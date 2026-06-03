@@ -9,25 +9,25 @@ st.title("🛡️ NEOS ETF Options Portfolio Dashboard")
 loop = st.sidebar.checkbox("Auto-Refresh Tickers (10s)", value=True)
 
 TICKERS = {
-    "SPYI": ("^SPX", "S&P 500"), 
-    "QQQI": ("^NDX", "Nasdaq-100"),
-    "IWMI": ("^RUT", "Russell 2000"), 
-    "NIHI": ("EFA", "MSCI EAFE Index"),
-    "XSPI": ("^SPX", "Boosted S&P 500"), 
-    "XQQI": ("^NDX", "Boosted Nasdaq"),
-    "XBCI": ("^CBTX", "Cboe Bitcoin Index"), 
-    "BTCI": ("^CBTX", "Cboe Bitcoin Index"),
-    "NEHI": ("BIL", "Enhanced Income Base"), 
-    "IYRI": ("IYR", "Dow Jones Real Estate"),
-    "IAUI": ("GLD", "Gold Bullion Trust"), 
-    "MLPI": ("AMLP", "MLP Infrastructure ETF"),
-    "QQQH": ("^NDX", "Hedged Nasdaq"), 
-    "SPYH": ("^SPX", "Hedged S&P 500"),
-    "NLSI": ("^NDX", "Hedged Large Cap"), 
-    "CSHI": ("^SPX", "Cash Income Proxy"),
-    "TLTI": ("^SPX", "S&P 500 Index Options"), 
-    "BNDI": ("^SPX", "Total Bond Options"),
-    "HYBI": ("^SPX", "High Yield Options Layer")
+    "SPYI": ("^SPX", "S&P 500® High Income ETF"), 
+    "QQQI": ("^NDX", "Nasdaq-100® High Income ETF"),
+    "IWMI": ("^RUT", "Russell 2000® High Income ETF"), 
+    "NIHI": ("EFA", "MSCI EAFE High Income ETF"),
+    "XSPI": ("^SPX", "Boosted S&P 500® High Income ETF"), 
+    "XQQI": ("^NDX", "Boosted Nasdaq-100® High Income ETF"),
+    "XBCI": ("^CBTX", "Boosted Bitcoin High Income ETF"), 
+    "BTCI": ("^CBTX", "Bitcoin High Income ETF"),
+    "NEHI": ("BIL", "Ethereum High Income ETF"), 
+    "IYRI": ("IYR", "Real Estate High income ETF"),
+    "IAUI": ("GLD", "Gold High Income ETF"), 
+    "MLPI": ("AMLP", "MLP & Energy Infrastructure High Income ETF"),
+    "QQQH": ("^NDX", "Nasdaq-100® Hedged Equity Income ETF"), 
+    "SPYH": ("^SPX", "S&P 500® Hedged Equity Income ETF"),
+    "NLSI": ("^NDX", "Long/Short Equity Income ETF"), 
+    "CSHI": ("^SPX", "Enhanced Income 1-3 Month T-Bill ETF"),
+    "TLTI": ("^SPX", "Enhanced Income 20+ Year Treasury Bond ETF"), 
+    "BNDI": ("^SPX", "Enhanced Income Aggregate Bond ETF"),
+    "HYBI": ("^SPX", "Enhanced Income Credit Select ETF")
 }
 
 CATEGORIES = {
@@ -191,12 +191,14 @@ for cat_name, symbols in CATEGORIES.items():
     for index, sym in enumerate(symbols):
         target_col = cols[index % 2]
         with target_col:
-            st.markdown(f"### 📈 {sym} Options Tracker")
             yf_ticker, description = TICKERS.get(sym, ("^SPX", "S&P 500"))
+
+            st.markdown(f"### 📈 {sym} - {description}")
+
             live_price = get_price(yf_ticker)
             if live_price and sym == "NIHI": live_price *= 30.0
             #if live_price and sym in ["XBCI", "BTCI"]: live_price /= 10.0
-            if live_price: st.metric(f"Live Base Value ({description})", f"{live_price:,.2f}")
+            if live_price: st.metric(f"Live Base Value ({yf_ticker})", f"{live_price:,.2f}")
             else: st.warning("⚠️ Live market polling offline.")
             file_path = os.path.join(base_dir, f"NEOS Holdings - {sym} Holdings.csv")
             is_hedged_cat = (cat_name == "Hedged Equity Income")
